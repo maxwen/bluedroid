@@ -76,7 +76,8 @@ LOCAL_SRC_FILES:= \
     ./jv/bta_jv_act.c \
     ./jv/bta_jv_cfg.c \
     ./jv/bta_jv_main.c \
-    ./jv/bta_jv_api.c
+    ./jv/bta_jv_api.c \
+    ./enrc2b/enrc2b-utils.c
 
 LOCAL_MODULE := libbt-brcm_bta
 LOCAL_MODULE_CLASS := STATIC_LIBRARIES
