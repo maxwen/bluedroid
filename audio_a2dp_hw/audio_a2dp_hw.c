@@ -64,6 +64,8 @@
 
 #define ASSERTC(cond, msg, val) if (!(cond)) {ERROR("### ASSERT : %s line %d %s (%d) ###", __FILE__, __LINE__, msg, val);}
 
+#define A2DP_TUNING_FILE "/sys/devices/platform/tegra_uart_brcm.2/a2dp_tuning"
+
 /*****************************************************************************
 **  Local type definitions
 ******************************************************************************/
@@ -115,6 +117,7 @@ struct a2dp_stream_in {
 ******************************************************************************/
 
 static size_t out_get_buffer_size(const struct audio_stream *stream);
+static void set_a2dp_kernel_tuning(int on);
 
 /*****************************************************************************
 **  Externs
@@ -860,6 +863,7 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
         goto err_open;
     }
 
+    set_a2dp_kernel_tuning(1);
     DEBUG("success");
     return 0;
 
@@ -891,6 +895,7 @@ static void adev_close_output_stream(struct audio_hw_device *dev,
     free(stream);
     a2dp_dev->output = NULL;
 
+    set_a2dp_kernel_tuning(0);
     DEBUG("done");
 }
 
@@ -1095,6 +1100,25 @@ static int adev_open(const hw_module_t* module, const char* name,
 static struct hw_module_methods_t hal_module_methods = {
     .open = adev_open,
 };
+
+static void set_a2dp_kernel_tuning(int on){
+    const char*sysfs_file = A2DP_TUNING_FILE;
+    int err=0;
+    int fd=0;
+    char* value = on?"1":"0";
+    
+    if ((fd = open(sysfs_file, O_RDWR)) == -1){
+        ERROR("set_a2dp_kernel_tuning: failed to open file %s", sysfs_file);
+        return;
+    }
+    
+    if(write(fd, value, strlen(value))==-1){
+        ERROR("set_a2dp_kernel_tuning: failed to write value %s file %s", value, sysfs_file);    
+    }
+
+    INFO("set_a2dp_kernel_tuning: set %s to %s", sysfs_file, value);
+    close(fd);
+}
 
 struct audio_module HAL_MODULE_INFO_SYM = {
     .common = {
