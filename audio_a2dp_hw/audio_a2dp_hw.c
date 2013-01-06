@@ -863,7 +863,7 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
         goto err_open;
     }
 
-    set_a2dp_kernel_tuning(1);
+    //set_a2dp_kernel_tuning(1);
     DEBUG("success");
     return 0;
 
@@ -895,7 +895,7 @@ static void adev_close_output_stream(struct audio_hw_device *dev,
     free(stream);
     a2dp_dev->output = NULL;
 
-    set_a2dp_kernel_tuning(0);
+    //set_a2dp_kernel_tuning(0);
     DEBUG("done");
 }
 
