@@ -359,6 +359,7 @@ static int start_audio_datapath(struct a2dp_stream_out *out)
         out->state = AUDIO_A2DP_STATE_STARTED;
     }
 
+    set_a2dp_kernel_tuning(1);
     return 0;
 }
 
@@ -389,6 +390,7 @@ static int stop_audio_datapath(struct a2dp_stream_out *out)
     skt_disconnect(out->audio_fd);
     out->audio_fd = AUDIO_SKT_DISCONNECTED;
 
+    set_a2dp_kernel_tuning(0);
     return 0;
 }
 
@@ -863,7 +865,6 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
         goto err_open;
     }
 
-    //set_a2dp_kernel_tuning(1);
     DEBUG("success");
     return 0;
 
@@ -895,7 +896,6 @@ static void adev_close_output_stream(struct audio_hw_device *dev,
     free(stream);
     a2dp_dev->output = NULL;
 
-    //set_a2dp_kernel_tuning(0);
     DEBUG("done");
 }
 
