@@ -10,6 +10,9 @@ LOCAL_CFLAGS += \
 endif
 LOCAL_CFLAGS += -DBUILDCFG $(bdroid_CFLAGS)
 
+#fix bluetooth on tuna.... we no need strict here
+LOCAL_CFLAGS += -O2 -fno-strict-aliasing
+
 LOCAL_PRELINK_MODULE:=false
 LOCAL_SRC_FILES:= \
     ./dm/bta_dm_ci.c \
