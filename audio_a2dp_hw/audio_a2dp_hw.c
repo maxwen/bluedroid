@@ -369,7 +369,11 @@ static int stop_audio_datapath(struct a2dp_stream_out *out)
     int oldstate = out->state;
 
     INFO("state %d", out->state);
-
+    
+    // make sure this gets stopped 
+    // else we may end-up with no deep sleep
+    set_a2dp_kernel_tuning(0);
+        
     if (out->ctrl_fd == AUDIO_SKT_DISCONNECTED)
          return -1;
 
@@ -389,8 +393,7 @@ static int stop_audio_datapath(struct a2dp_stream_out *out)
     /* disconnect audio path */
     skt_disconnect(out->audio_fd);
     out->audio_fd = AUDIO_SKT_DISCONNECTED;
-
-    set_a2dp_kernel_tuning(0);
+    
     return 0;
 }
 
@@ -398,6 +401,10 @@ static int suspend_audio_datapath(struct a2dp_stream_out *out, bool standby)
 {
     INFO("state %d", out->state);
 
+    // make sure this gets stopped 
+    // else we may end-up with no deep sleep
+    set_a2dp_kernel_tuning(0);
+    
     if (out->ctrl_fd == AUDIO_SKT_DISCONNECTED)
          return -1;
 
