@@ -110,14 +110,6 @@
 #define SBC_NO_PCM_CPY_OPTION FALSE
 #endif
 
-#ifndef SBC_IPAQ_OPT
-#define SBC_IPAQ_OPT FALSE
-#endif
-
-#ifndef SBC_IS_64_MULT_IN_QUANTIZER
-#define SBC_IS_64_MULT_IN_QUANTIZER FALSE
-#endif
-
 #ifndef BTA_INCLUDED
 #define BTA_INCLUDED TRUE
 #endif
@@ -1226,6 +1218,11 @@ and USER_HW_DISABLE_API macros */
 #define BTM_BLE_CONFORMANCE_TESTING           FALSE
 #endif
 
+/* Maximum number of consecutive HCI commands  that can time out
+* before  it gets treated as H/w error*/
+#ifndef BTM_MAX_HCI_CMD_TOUT_BEFORE_RESTART
+#define BTM_MAX_HCI_CMD_TOUT_BEFORE_RESTART 2
+#endif
 
 /******************************************************************************
 **
@@ -1313,7 +1310,7 @@ and USER_HW_DISABLE_API macros */
 
 /* Minimum number of ACL credit for high priority link */
 #ifndef L2CAP_HIGH_PRI_MIN_XMIT_QUOTA
-#define L2CAP_HIGH_PRI_MIN_XMIT_QUOTA       4
+#define L2CAP_HIGH_PRI_MIN_XMIT_QUOTA       5
 #endif
 
 /* used for monitoring HCI ACL credit management */
