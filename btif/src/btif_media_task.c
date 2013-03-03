@@ -154,7 +154,7 @@ enum {
 #endif
 
 /* Middle quality quality setting @ 44.1 khz */
-#define DEFAULT_SBC_BITRATE 229
+#define DEFAULT_SBC_BITRATE 328
 
 #ifndef A2DP_MEDIA_TASK_STACK_SIZE
 #define A2DP_MEDIA_TASK_STACK_SIZE       0x2000         /* In bytes */
