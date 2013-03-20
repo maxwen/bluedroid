@@ -796,13 +796,20 @@ static int in_remove_audio_effect(const struct audio_stream *stream, effect_hand
     return 0;
 }
 
+#ifndef ICS_AUDIO_BLOB
 static int adev_open_output_stream(struct audio_hw_device *dev,
                                    audio_io_handle_t handle,
                                    audio_devices_t devices,
                                    audio_output_flags_t flags,
                                    struct audio_config *config,
                                    struct audio_stream_out **stream_out)
+#else
+static int adev_open_output_stream(struct audio_hw_device *dev, uint32_t devices,
+                              int *format, uint32_t *channels,
+                              uint32_t *sample_rate,
+                              struct audio_stream_out **stream_out)
 
+#endif
 {
     struct a2dp_audio_device *a2dp_dev = (struct a2dp_audio_device *)dev;
     struct a2dp_stream_out *out;
@@ -837,12 +844,19 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
     a2dp_stream_out_init(out);
 
    /* set output config values */
-   if (config)
-   {
+#ifndef ICS_AUDIO_BLOB
+    if (config)
+    {
       config->format = out_get_format((const struct audio_stream *)&out->stream);
       config->sample_rate = out_get_sample_rate((const struct audio_stream *)&out->stream);
       config->channel_mask = out_get_channels((const struct audio_stream *)&out->stream);
-   }
+	}
+#else
+	*format = out_get_format((const struct audio_stream *)&out->stream);
+    *sample_rate = out_get_sample_rate((const struct audio_stream *)&out->stream);
+   	*channels = out_get_channels((const struct audio_stream *)&out->stream);
+#endif
+
     *stream_out = &out->stream;
     a2dp_dev->output = out;
 
@@ -983,18 +997,31 @@ static int adev_get_mic_mute(const struct audio_hw_device *dev, bool *state)
 }
 
 static size_t adev_get_input_buffer_size(const struct audio_hw_device *dev,
-                                         const struct audio_config *config)
+#ifndef ICS_AUDIO_BLOB
+                                    const struct audio_config *config)
+#else
+                                    uint32_t sample_rate, int format,
+                                    int channel_count)
+#endif 
 {
     FNLOG();
 
     return 320;
 }
 
+#ifndef ICS_AUDIO_BLOB
 static int adev_open_input_stream(struct audio_hw_device *dev,
-                                  audio_io_handle_t handle,
-                                  audio_devices_t devices,
-                                  struct audio_config *config,
-                                  struct audio_stream_in **stream_in)
+                             audio_io_handle_t handle,
+                             audio_devices_t devices,
+                             struct audio_config *config,
+                             struct audio_stream_in **stream_in)
+#else
+static int adev_open_input_stream(struct audio_hw_device *dev, uint32_t devices,
+                             int *format, uint32_t *channels,
+                             uint32_t *sample_rate,
+                             audio_in_acoustics_t acoustics,
+                             struct audio_stream_in **stream_in)
+#endif
 {
     struct a2dp_audio_device *ladev = (struct a2dp_audio_device *)dev;
     struct a2dp_stream_in *in;
